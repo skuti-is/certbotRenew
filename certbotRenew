@@ -1,0 +1,52 @@
+#!/bin/bash
+
+minAge="+60" # days
+crtDir="/etc/letsencrypt/live"
+baseDir="/opt"
+certbotGit="https://github.com/certbot/certbot"
+certbotDir="$baseDir/certbot"
+certbot="$certbotDir/certbot-auto"
+
+err(){
+  echo "error: $*"
+  exit 1
+}
+
+noCrtDir(){
+  echo "To create create new certificate run"
+  echo "certbot-auto certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]"
+  exit 0
+}
+
+# verify install
+if [ ! -d "$baseDir" ]; then
+  mkdir -p "$baseDir" || err "$baseDir missing and cant create"
+fi
+if [ ! -d "$certbotDir" ]; then
+  git=$(which git)
+  if [ -z "$git" ]; then
+    # install cert-bot dependenses
+    apt-get -y install augeas-doc augeas-lenses augeas-tools autoconf automake binutils binutils-doc bison ca-certificates cpp cpp-5 cpp-doc dialog flex gcc gcc-5 gcc-5-doc gcc-5-locales gcc-5-multilib gcc-doc gcc-multilib gdb glibc-doc libasan2 libasan2-dbg libatomic1 libatomic1-dbg libaugeas0 libc6-dev libcc1-0 libc-dev-bin libcilkrts5 libcilkrts5-dbg libexpat1-dev libffi-dev libgcc1-dbg libgcc-5-dev libgomp1 libgomp1-dbg libisl15 libitm1 libitm1-dbg liblsan0 liblsan0-dbg libmpc3 libmpfr4 libmpx0 libmpx0-dbg libpython2.7 libpython2.7-dev libpython-dev libquadmath0 libquadmath0-dbg libssl-dev libssl-doc libtool libtsan0 libtsan0-dbg libubsan0 libubsan0-dbg linux-libc-dev make manpages manpages-dev python2.7-dev python3-virtualenv python-dev python-pip-whl python-pkg-resources python-setuptools python-virtualenv virtualenv zlib1g-dev
+    # git missing, fix it
+    apt-get -y install git
+    git=$(which git)||err "install git manualy"
+  fi
+  $git clone "$certbotGit" "$certbotDir"||err "git cloen failed"
+  [ -f "/usr/local/sbin/certbot-auto" ]||ln -s "$certbot" "/usr/local/sbin/certbot-auto"
+fi
+
+# find ex certs
+[ -d "$crtDir" ]||noCrtDir
+renew=$(find "$crtDir" -maxdepth 0 -type d -mtime $minAge|wc -l)
+
+if [ $renew -eq 0 ]; then
+  # nothing to renew
+  exit 0
+fi
+
+# renew certificates
+$certbot renew --webroot --quiet 
+
+# reload webserver
+nginx=$(which nginx)&&$nginx -sreload
+apache=$(which apache2ctl)&&$apache2ctl -k graceful
