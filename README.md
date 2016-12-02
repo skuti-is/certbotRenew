@@ -12,7 +12,9 @@ Renew Let's Encrypt certificates with cron on debian / ubuntu
 
 ## usage
 Copy certbotRenew to /usr/local/sbin/
+
 Make it executable
+
 Run manualy to install git and pull down fresh version of certbot-auto to /opt/certbot/
 ```bash
 wget -qO /usr/local/sbin/certbotRenew https://raw.githubusercontent.com/skuti-is/certbotRenew/master/certbotRenew
