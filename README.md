@@ -12,13 +12,17 @@ Renew Let's Encrypt certificates with cron on debian / ubuntu
 
 ## usage
 copy certbotRenew to /usr/local/sbin/
+
 $ chmod +x certbotRenew
 
 Run manualy to install git and pull down fresh version of certbot-auto to /opt/certbot/
+
 $ certbotRenew
 
 Add your first certificate
+
 $ certbot-auto certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]
+
 Update webserver config, your own way, to include certificates.
 
 Add to daily cron
