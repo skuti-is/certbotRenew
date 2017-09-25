@@ -24,7 +24,7 @@ certbotRenew
 
 Add your first certificate
 ```bash
-certbot-auto certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]
+certbot certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]
 ```
 
 Update webserver config, your own way, to include certificates.
