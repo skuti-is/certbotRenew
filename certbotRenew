@@ -2,10 +2,6 @@
 
 minAge="+60" # days
 crtDir="/etc/letsencrypt/live"
-baseDir="/opt"
-certbotGit="https://github.com/certbot/certbot"
-certbotDir="$baseDir/certbot"
-certbot="$certbotDir/certbot-auto"
 
 err(){
   echo "error: $*"
@@ -14,23 +10,18 @@ err(){
 
 noCrtDir(){
   echo "To create create new certificate run"
-  echo "certbot-auto certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]"
+  echo "certbot certonly --webroot -w <docRoot> -d <domain> [-d domainalias>]"
   exit 0
 }
 
 # verify install
-if [ ! -d "$baseDir" ]; then
-  mkdir -p "$baseDir" || err "$baseDir missing and cant create"
-fi
-if [ ! -d "$certbotDir" ]; then
-  git=$(which git)
-  if [ -z "$git" ]; then
-    # git missing, fix it
-    apt-get -y install git
-    git=$(which git)||err "install git manualy"
-  fi
-  $git clone "$certbotGit" "$certbotDir"||err "git cloen failed"
-  [ -f "/usr/local/sbin/certbot-auto" ]||ln -s "$certbot" "/usr/local/sbin/certbot-auto"
+certbot=$(which certbot)
+if [ -z "$certbot" ]; then
+  apt-get -y install software-properties-common
+  addAptRepository=$(which add-apt-repository)||err "software-properties-common missing"
+  $addAptRepository -yu ppa:certbot/certbot||err "add certbot ppa manualy"
+  apt-get -y install certbot
+  certbot=$(which certbot)||err "install certbot manualy"
 fi
 
 # find ex certs
