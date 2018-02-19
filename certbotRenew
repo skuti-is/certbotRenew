@@ -17,7 +17,7 @@ noCrtDir(){
 }
 
 # verify install
-certbot=$(which certbot-auto certbot)
+certbot=$(which certbot-auto certbot|head -n1)
 if [ -z "$certbot" ]; then
   apt-get -y install software-properties-common
   addAptRepository=$(which add-apt-repository)||err "software-properties-common missing"
