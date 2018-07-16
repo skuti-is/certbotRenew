@@ -39,5 +39,13 @@ fi
 $certbot renew --webroot --quiet 
 
 # reload webserver
-nginx=$(which nginx)&&$nginx -sreload
-apache2ctl=$(which apache2ctl)&&$apache2ctl -k graceful
+if nginx=$(which nginx); then
+  if ps ax | grep -q nginx; then
+    $nginx -sreload
+  fi
+fi
+if apache2ctl=$(which apache2ctl); then
+  if ps ax | grep -q "apache2 -k start"; then
+    $apache2ctl -k graceful
+  fi
+fi
