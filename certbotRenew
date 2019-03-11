@@ -21,7 +21,7 @@ certbot=$(which certbot-auto certbot|head -n1)
 if [ -z "$certbot" ]; then
   apt-get -yq install software-properties-common
   addAptRepository=$(which add-apt-repository)||err "software-properties-common missing"
-  $addAptRepository -yq ppa:certbot/certbot||err "add certbot ppa manualy"
+  $addAptRepository -y ppa:certbot/certbot||err "add certbot ppa manualy"
   apt-get -yq install certbot
   apt-get -q update
   certbot=$(which certbot)||err "install certbot manualy"
