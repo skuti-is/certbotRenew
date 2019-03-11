@@ -19,10 +19,11 @@ noCrtDir(){
 # verify install
 certbot=$(which certbot-auto certbot|head -n1)
 if [ -z "$certbot" ]; then
-  apt-get -y install software-properties-common
+  apt-get -yq install software-properties-common
   addAptRepository=$(which add-apt-repository)||err "software-properties-common missing"
-  $addAptRepository -yu ppa:certbot/certbot||err "add certbot ppa manualy"
-  apt-get -y install certbot
+  $addAptRepository -yq ppa:certbot/certbot||err "add certbot ppa manualy"
+  apt-get -yq install certbot
+  apt-get -q update
   certbot=$(which certbot)||err "install certbot manualy"
 fi
 
