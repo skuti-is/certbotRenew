@@ -32,4 +32,4 @@ Update webserver config, your own way, to include certificates.
 Add to daily cron
 
 ## tested
-on ubuntu 14.04, 16.04, 18.04 and should work on most debian based systems.
+on ubuntu 16.04, 18.04, 20.04 and should work on most debian based systems.
